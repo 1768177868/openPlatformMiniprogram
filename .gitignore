@@ -1,0 +1,6 @@
+.env
+runtime
+public/uploads
+.well-known
+.user.ini
+public/nginx.htaccess
