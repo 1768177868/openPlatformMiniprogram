@@ -80,7 +80,7 @@ class Business extends Backend
 
             //授权地址 
             foreach($list as &$v){
-                $response = $this->openPlatform->pre_auth->redirect('https://open2.grazy.cn/openPlatform/callback/'.$row->id);
+                $response = $this->openPlatform->pre_auth->redirect(request()->domain().'/openPlatform/callback/'.$row->id);
                 $v['authorize_url'] = $response->getTargetUrl(); 
             }
             unset($v);
