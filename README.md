@@ -1,4 +1,3 @@
-# 中宇第三方平台
 
 微信第三方平台小程序管理
 授权事件接收 URL 域名/openPlatform/ticket
