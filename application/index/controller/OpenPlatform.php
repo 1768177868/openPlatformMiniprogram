@@ -51,17 +51,18 @@ class OpenPlatform extends Controller
      * $id 商户id
      * @return void
      */
-    public function callback($id = null)
+    public function callback($ids = null)
     {
         $param = request()->param();
-        $miniprogram = $this->miniprogramModel->where(['business_id'=>$id])->find();
+        $miniprogram = $this->miniprogramModel->where(['business_id'=>$ids])->find();
+
         if($miniprogram){
             $authorizer_token = json_decode($miniprogram['authorizer_token'],true);
             if(isset($authorizer_token['expires_in']) && $authorizer_token['expires_in'] + $this->openPlatformModel->expires > time()){
                 $this->success('授权成功',request()->domain().'/ZpQNKcLtFz.php/business?ref=addtabs');
             }  
         }
-        $this->authorization($param['auth_code'],$id,$miniprogram);
+        $this->authorization($param['auth_code'],$ids,$miniprogram);
         $this->success('授权成功',request()->domain().'/ZpQNKcLtFz.php/business?ref=addtabs');
     }
 
@@ -110,15 +111,16 @@ class OpenPlatform extends Controller
         //判断小程序是否已被其他商户授权
         $is_miniprogram = $this->miniprogramModel
         ->where(['appid'=>$authorizer_appid])
-        ->where(['business_id','<>',$id])
+        ->where('business_id','neq',$id)
         ->find();
 
         if($is_miniprogram){
             unset($data['business_id']);
             $this->miniprogramModel->save($data,['appid' => $authorizer_appid]);
-            $this->error('小程序已被绑定');
+            $this->error('小程序已被绑定',request()->domain().'/ZpQNKcLtFz.php/business?ref=addtabs');
         }
-       
+
+      
         if($miniprogram){
             $this->miniprogramModel->save($data,['id' => $miniprogram['id']]);
         }else{
